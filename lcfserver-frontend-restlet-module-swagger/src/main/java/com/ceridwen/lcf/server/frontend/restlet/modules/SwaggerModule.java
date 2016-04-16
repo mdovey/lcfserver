@@ -43,10 +43,10 @@ public class SwaggerModule implements OptionalModuleConfiguration {
 		Json.mapper().registerModule(new JaxbAnnotationModule());
     Yaml.mapper().registerModule(new JaxbAnnotationModule());
 
-    String path = "http://localhost:8000/lcfserver";
+    String path = "http://lcf.ceridwen.com";
     try {
-      ServletContext sc = (ServletContext) application.getContext().getServerDispatcher().getContext().getAttributes().get( "org.restlet.ext.servlet.ServletContext" );
-      path = sc.getResource("").toString();        
+      ServletContext sc = (ServletContext) application.getContext().getAttributes().get("org.restlet.ext.servlet.ServletContext");
+      path = path + sc.getContextPath();
     } catch (Exception ex) {
     }
     
