@@ -47,6 +47,7 @@ import com.ceridwen.lcf.server.core.EntityTypes;
 import com.ceridwen.lcf.server.core.filter.EntitySourcesFilter;
 import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
 import com.ceridwen.lcf.server.core.persistence.EntitySourcesInterface;
+import java.util.Calendar;
 
 
 /**
@@ -126,18 +127,17 @@ public class DefaultDataLoaderFilter implements EntitySourcesFilter {
 	}
 	
 	private void populatePatrons(EntitySourceInterface<Patron> patronSource, EntitySourceInterface<Contact> contactSource, AssociatedLocation defaultLocation) {
-		Patron patron = new Patron();
+		Calendar dateBuilder = Calendar.getInstance();
+    
+    Patron patron = new Patron();
 		patron.setName("A Patron");	
 		patron.setLanguage(LanguageCode.ENG);
 		patron.getAssociatedLocation().add(defaultLocation);
 		CardStatusInfo csi = new CardStatusInfo();
 		csi.setCardStatus(CardStatus.VALUE_1);
 		patron.setCardStatusInfo(csi);
-		try {
-			patron.setDateOfBirth(DatatypeFactory.newInstance().newXMLGregorianCalendarDate(1960, 1, 1, 0));
-		} catch (DatatypeConfigurationException e) {
-			// as this is demo data, not crucial if DOB not set.
-		}
+    dateBuilder.set(1960, 1, 1);
+    patron.setDateOfBirth(dateBuilder.getTime());
 		
 		patronSource.Create(patron);
 		populateContacts(contactSource, patron, "a.patron@library", "1");
@@ -150,11 +150,8 @@ public class DefaultDataLoaderFilter implements EntitySourcesFilter {
 		csi = new CardStatusInfo();
 		csi.setCardStatus(CardStatus.VALUE_1);
 		patron.setCardStatusInfo(csi);
-		try {
-			patron.setDateOfBirth(DatatypeFactory.newInstance().newXMLGregorianCalendarDate(1980, 1, 1, 0));
-		} catch (DatatypeConfigurationException e) {
-			// as this is demo data, not crucial if DOB not set.
-		}
+    dateBuilder.set(1960, 1, 1);
+    patron.setDateOfBirth(dateBuilder.getTime());
 		
 		patronSource.Create(patron);
 		
