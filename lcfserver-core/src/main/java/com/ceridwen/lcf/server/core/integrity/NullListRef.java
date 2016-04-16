@@ -29,8 +29,8 @@ public class NullListRef<E> extends ListRef<E> {
 		super(					
 			(o,s) -> {}, //Manifestation does not contain list of child Items
 			(o,s) -> {}, //Manifestation does not contain list of child Items
-			(o,s) -> {return false;},
-			o -> {return new Vector<>();}
+			(o,s) -> false,
+			 o -> new Vector<>()
 		);
 	}
 

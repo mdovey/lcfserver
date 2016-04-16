@@ -52,164 +52,169 @@ public class RelationshipFactory {
 		private static final long serialVersionUID = 1;
 		{
 
-			add(new Relationship<Manifestation,Item>(
+      // Manifestation 1 -> n Item
+			add(new Relationship<>(
 				EntityTypes.Type.Manifestation, 
-				new SingletonRef<Item>(
-					o -> {return o.getManifestationRef();},
-					(o,s) -> {o.setManifestationRef(s);}
-				),
+				new SingletonRef<>(
+					Item::getManifestationRef, 
+          Item::setManifestationRef),
 				EntityTypes.Type.Item, 
-				new ListRef<Manifestation>(
-					(o,s) -> {o.getItemRef().add(s);},
-					(o,s) -> {o.getItemRef().remove(s);},
-					(o,s) -> {return o.getItemRef().contains(s);},
-					o -> { return o.getItemRef(); }
-				),
+				new ListRef<>(
+					(Manifestation o,String s) -> o.getItemRef().add(s),
+					(Manifestation o,String s) -> o.getItemRef().remove(s),
+					(Manifestation o,String s) -> o.getItemRef().contains(s),
+           Manifestation::getItemRef
+        ),
 				Relationship.Integrity.ParentRequired
 			));		
 			
-			add(new Relationship<Item, Location>(
+      // Item 1 -> n Location
+			add(new Relationship<>(
 				EntityTypes.Type.Item,
-				new NullListRef<Location>(),
+				new NullListRef<>(),
 				EntityTypes.Type.Location, 
 				new ListRef<Item>(
-					(o,s) -> {}, // AssociatedLocation is complex type so cannot be added automatically
-					(o,s) -> {	o.getAssociatedLocation().removeIf(
-									a -> { return StringUtils.equals(a.getLocationRef(), s); }
-								);
-							},
-					(o,s) -> {	for (AssociatedLocation aloc: o.getAssociatedLocation()) {
-									if (StringUtils.equals(aloc.getLocationRef(), s)) {
-										return true;
-									}
-								}
-								return false;
-							 },
-					o -> {    Vector<String> locs = new Vector<>();
-                                o.getAssociatedLocation().forEach(
-                                	a -> {locs.add(a.getLocationRef()); }
-                                );					
-								return locs;
-							}
+					(Item o, String s) -> {}, // AssociatedLocation is complex type so cannot be added automatically
+					(Item o, String s) -> o.getAssociatedLocation().removeIf(
+                                  a -> StringUtils.equals(a.getLocationRef(), s)
+                                ),
+					(Item o, String s) -> {	for (AssociatedLocation aloc: o.getAssociatedLocation()) {
+                                    if (StringUtils.equals(aloc.getLocationRef(), s)) {
+                                      return true;
+                                    }
+                                  }
+                                  return false;
+                                },
+					o -> {  Vector<String> locs = new Vector<>();
+                  o.getAssociatedLocation().forEach(
+                    a -> locs.add(a.getLocationRef())
+                  );					
+                  return locs;
+                }
 				)
 			));				
 			
-			add(new Relationship<Item, Reservation>(
+      // Item 1 -> n Reservation      
+			add(new Relationship<>(
 				EntityTypes.Type.Item, 
 				new SingletonRef<Reservation>(
-					o -> {return o.getItemRef();},
-					(o,s) -> {o.setItemRef(s);}
-				),
+					Reservation::getItemRef,
+          Reservation::setItemRef),
 				EntityTypes.Type.Reservation, 
-				new ListRef<Item>(
-					(o,s) -> {o.getReservationRef().add(s);},
-					(o,s) -> {o.getReservationRef().remove(s);},
-					(o,s) -> {return o.getReservationRef().contains(s);},
-					o -> {return (o.getReservationRef());}
-				),
+				new ListRef<>(
+					(Item o,String s) -> o.getReservationRef().add(s),
+					(Item o,String s) -> o.getReservationRef().remove(s),
+					(Item o,String s) -> o.getReservationRef().contains(s),
+           Item::getReservationRef
+        ),
 				Relationship.Integrity.ParentRequired
 			));
 
-			add(new Relationship<Item, Loan>(
+      // Item 1 -> 1 Loan
+			add(new Relationship<>(
 				EntityTypes.Type.Item, 
-				new SingletonRef<Loan>(
-					o -> {return o.getItemRef();},
-					(o,s) -> {o.setItemRef(s);}
+				new SingletonRef<>(
+          Loan::getItemRef,
+          Loan::setItemRef
 				),
 				EntityTypes.Type.Loan, 
-				new SingletonRef<Item>(
-					o -> {return o.getOnLoanRef();},
-					(o,s) -> {o.setOnLoanRef(s);}
+				new SingletonRef<>(
+          Item::getOnLoanRef,
+          Item::setOnLoanRef
 				),
 				Relationship.Integrity.ParentRequired
 			));			
 			
-			add(new Relationship<Patron, Contact>(
+      // Patron 1 -> n Contact
+			add(new Relationship<>(
 				EntityTypes.Type.Patron, 
-				new SingletonRef<Contact>(
-					o -> {return o.getPatronRef();},
-					(o,s) -> {o.setPatronRef(s);}
+				new SingletonRef<>(
+          Contact::getPatronRef,
+          Contact::setPatronRef
 				),
 				EntityTypes.Type.Contact, 
-				new ListRef<Patron>(
-					(o,s) -> {o.getContactRef().add(s);},
-					(o,s) -> {o.getContactRef().remove(s);},
-					(o,s) -> {return o.getContactRef().contains(s);},
-					o -> {return o.getContactRef();}
+				new ListRef<>(
+					(Patron o,String s) -> o.getContactRef().add(s),
+					(Patron o,String s) -> o.getContactRef().remove(s),
+					(Patron o,String s) -> o.getContactRef().contains(s),
+           Patron::getContactRef
 				),
 				Relationship.Integrity.ParentRequired
 			));
 
-			add(new Relationship<Patron, Location>(
+      // Patron 0 -> n Location
+			add(new Relationship<>(
 				EntityTypes.Type.Patron, 
-				new NullListRef<Location>(),
+				new NullListRef<>(),
 				EntityTypes.Type.Location, 
-				new ListRef<Patron>(
-					(o,s) -> {}, // AssociatedLocation is complex type so cannot be added automatically
-					(o,s) -> {	o.getAssociatedLocation().removeIf(
-									a -> { return StringUtils.equals(a.getLocationRef(), s); }
-								);
-							},
-					(o,s) -> {	for (AssociatedLocation aloc: o.getAssociatedLocation()) {
-									if (StringUtils.equals(aloc.getLocationRef(), s)) {
-										return true;
-									}
-								}
-								return false;
-							 },
-					o -> {    Vector<String> locs = new Vector<>();
-		                        o.getAssociatedLocation().forEach(
-		                        	a -> {locs.add(a.getLocationRef()); }
-		                        );					
-								return locs;
-							}
+				new ListRef<>(
+					(Patron o,String s) -> {}, // AssociatedLocation is complex type so cannot be added automatically
+					(Patron o,String s) ->  o.getAssociatedLocation().removeIf(
+                                    a -> StringUtils.equals(a.getLocationRef(), s)
+                                  ),
+					(Patron o,String s) ->  { for (AssociatedLocation aloc: o.getAssociatedLocation()) {
+                        if (StringUtils.equals(aloc.getLocationRef(), s)) {
+                          return true;
+                        }
+                      }
+                      return false;
+                    },
+					(Patron o) -> { Vector<String> locs = new Vector<>();
+                          o.getAssociatedLocation().forEach(
+                            a -> locs.add(a.getLocationRef()) 
+                          );					
+                          return locs;
+                        }
 				)
 			));
 			
-			add(new Relationship<Patron, Loan>(
+      // Patron 1 -> n Loan
+			add(new Relationship<>(
 				EntityTypes.Type.Patron, 
-				new SingletonRef<Loan>(
-					o -> {return o.getPatronRef();},
-					(o,s) -> {o.setPatronRef(s);}
+				new SingletonRef<>(
+          Loan::getPatronRef,
+          Loan::setPatronRef
 				),
 				EntityTypes.Type.Loan, 
-				new ListRef<Patron>(
-					(o,s) -> {o.getLoanRef().add(s);},
-					(o,s) -> {o.getLoanRef().remove(s);},
-					(o,s) -> {return o.getLoanRef().contains(s);},
-					o -> {return o.getLoanRef();}
+				new ListRef<>(
+					(Patron o, String s) -> o.getLoanRef().add(s),
+					(Patron o, String s) -> o.getLoanRef().remove(s),
+					(Patron o, String s) -> o.getLoanRef().contains(s),
+           Patron::getLoanRef
 				),
 				Relationship.Integrity.ParentRequired
 			));
 
-			add(new Relationship<Patron, Reservation>(
+      // Patron 1 -> n Reservation
+			add(new Relationship<>(
 				EntityTypes.Type.Patron, 
-				new SingletonRef<Reservation>(
-					o -> {return o.getPatronRef();},
-					(o,s) -> {o.setPatronRef(s);}
+				new SingletonRef<>(
+          Reservation::getPatronRef,
+          Reservation::setPatronRef
 				),
 				EntityTypes.Type.Reservation, 
-				new ListRef<Patron>(
-					(o,s) -> {o.getReservationRef().add(s);},
-					(o,s) -> {o.getReservationRef().remove(s);},
-					(o,s) -> {return o.getReservationRef().contains(s);},
-					o -> {return o.getReservationRef();}
+				new ListRef<>(
+					(Patron o, String s) -> o.getReservationRef().add(s),
+					(Patron o, String s) -> o.getReservationRef().remove(s),
+					(Patron o, String s) -> o.getReservationRef().contains(s),
+           Patron::getReservationRef
 				),
 				Relationship.Integrity.ParentRequired
 			));
 			
-			add(new Relationship<Patron, Charge>(
+      // Patron 1-> n Charge
+			add(new Relationship<>(
 				EntityTypes.Type.Patron, 
-				new SingletonRef<Charge>(
-					o -> {return o.getPatronRef();},
-					(o,s) -> {o.setPatronRef(s);}
+				new SingletonRef<>(
+          Charge::getPatronRef,
+					Charge::setPatronRef
 				),
 				EntityTypes.Type.Charge, 
-				new ListRef<Patron>(
-					(o,s) -> {o.getChargeRef().add(s);},
-					(o,s) -> {o.getChargeRef().remove(s);},
-					(o,s) -> {return o.getChargeRef().contains(s);},
-					o -> {return o.getChargeRef();}
+				new ListRef<>(
+					(Patron o,String s) -> o.getChargeRef().add(s),
+					(Patron o,String s) -> o.getChargeRef().remove(s),
+					(Patron o,String s) -> o.getChargeRef().contains(s),
+           Patron::getChargeRef
 				),
 				Relationship.Integrity.ParentRequired
 			));
@@ -219,23 +224,13 @@ public class RelationshipFactory {
 	
 	public static List<Relationship<?,?>> getRelationshipsAsParent(EntityTypes.Type parent) {
 		List<Relationship<?,?>> result = new Vector<>();		
-		for (Relationship<?,?> r: relationships) {
-			if (r.getParentType() == parent) {
-				result.add(r);
-			}
-		}
-		
+    relationships.stream().filter(r -> r.getParentType() == parent).forEach(result::add);
 		return result;
 	}
 
 	public static List<Relationship<?,?>> getRelationshipsAsChild(EntityTypes.Type child) {
 		List<Relationship<?,?>> result = new Vector<>();		
-		for (Relationship<?,?> r: relationships) {
-			if (r.getChildType() == child) {
-				result.add(r);
-			}
-		}
-		
+    relationships.stream().filter(r -> r.getChildType() == child).forEach(result::add);		
 		return result;
 	}
 	

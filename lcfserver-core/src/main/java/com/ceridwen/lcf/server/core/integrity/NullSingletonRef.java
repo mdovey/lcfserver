@@ -25,7 +25,7 @@ public class NullSingletonRef<E> extends SingletonRef<E> {
 
 	public NullSingletonRef() {
 		super(
-			o -> {return "";},
+			o -> "",
 			(o, s) -> {}
 		);
 	}
