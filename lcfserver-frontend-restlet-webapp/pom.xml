@@ -49,11 +49,6 @@
       <artifactId>${lcfserver.backend.artifactId}</artifactId>
       <version>${lcfserver.backend.version}</version>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>lcfserver-frontend-restlet-module-swagger</artifactId>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
 
   <profiles>
