@@ -22,6 +22,7 @@
 package com.ceridwen.lcf.server.core.persistence;
 
 import com.ceridwen.lcf.server.core.QueryResults;
+import java.util.List;
 
 public interface EntitySourceInterface<E> {
 	String Create(Object parent, E entity);
@@ -31,4 +32,7 @@ public interface EntitySourceInterface<E> {
 	void Delete(String identifier);
 	QueryResults<E> Query(Object parent, int start, int max, String query);
 	QueryResults<E> Query(String query, int start, int max);
+  
+  public List<String> listEditableProperties();
+  public void setProperty(String identifier, String property, String value);
 }

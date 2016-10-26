@@ -37,6 +37,7 @@ import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
 import com.ceridwen.lcf.server.core.persistence.EntitySourcesInterface;
 import com.ceridwen.lcf.server.core.responses.LCFResponse_CheckIn;
 import com.ceridwen.lcf.server.core.responses.LCFResponse_CheckOut;
+import java.util.List;
 
 /**
  * 
@@ -137,6 +138,16 @@ public class CheckInOutFilter implements EntitySourcesFilter {
 		public QueryResults<Loan> Query(String query, int start, int max) {
 			return wrapped.Query(query, start, max);
 		}
+    
+    @Override
+    public List<String> listEditableProperties() {
+      return this.wrapped.listEditableProperties();
+    }
+
+    @Override
+    public void setProperty(String identifier, String property, String value) {
+      this.wrapped.setProperty(identifier, property, value);
+    }
 	}
 		
 }

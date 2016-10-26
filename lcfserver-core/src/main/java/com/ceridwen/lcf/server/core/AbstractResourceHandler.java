@@ -31,6 +31,10 @@ import com.ceridwen.lcf.server.core.exceptions.EXC05_InvalidEntityReference;
 import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
 import com.ceridwen.lcf.server.core.referencing.Referencer;
 import com.ceridwen.lcf.server.core.referencing.editor.ReferenceEditor;
+import generated.EntityType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractResourceHandler<E> {
 
@@ -204,5 +208,12 @@ public abstract class AbstractResourceHandler<E> {
 		this.getEntitySource(this.entityType).Delete(identifier);
 		return;
 	}
-	
+  
+  public List<String> listEditableProperties() {
+    return this.getEntitySource(this.entityType).listEditableProperties();
+  }
+  
+  public void setProperty(String identifier, String property, String value) {
+    this.getEntitySource(this.entityType).setProperty(identifier, property, value);
+  }
 }

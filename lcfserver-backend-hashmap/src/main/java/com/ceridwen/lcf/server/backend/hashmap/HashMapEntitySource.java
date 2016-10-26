@@ -33,6 +33,8 @@ import com.ceridwen.lcf.server.core.QueryResults;
 import com.ceridwen.lcf.server.core.exceptions.EXC01_ServiceUnavailable;
 import com.ceridwen.lcf.server.core.exceptions.EXC05_InvalidEntityReference;
 import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class HashMapEntitySource<E> implements EntitySourceInterface<E> {
@@ -135,5 +137,14 @@ public class HashMapEntitySource<E> implements EntitySourceInterface<E> {
 		
 		return results;
 	}
+
+  @Override
+  public List<String> listEditableProperties() {
+    return Arrays.asList();
+  }
+
+  @Override
+  public void setProperty(String identifier, String property, String value) {
+  }
 
 }

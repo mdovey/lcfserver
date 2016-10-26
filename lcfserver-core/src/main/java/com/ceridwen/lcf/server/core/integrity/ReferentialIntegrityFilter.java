@@ -446,4 +446,14 @@ class ReferentialEntitySource<E> implements EntitySourceInterface<E> {
 			
 		}
 	}
+
+  @Override
+  public List<String> listEditableProperties() {
+    return this.wrapped.listEditableProperties();
+  }
+
+  @Override
+  public void setProperty(String identifier, String property, String value) {
+    this.wrapped.setProperty(identifier, property, value);
+  }
 }

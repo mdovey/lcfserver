@@ -30,6 +30,7 @@ import com.ceridwen.lcf.server.core.EntityTypes;
 import com.ceridwen.lcf.server.core.EntityTypes.Type;
 import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
 import com.ceridwen.lcf.server.core.persistence.EntitySourcesInterface;
+import java.util.List;
 
 @SuppressWarnings("rawtypes")
 public class ServerGeneratedIdFilter implements EntitySourcesFilter {
@@ -110,5 +111,15 @@ public class ServerGeneratedIdFilter implements EntitySourcesFilter {
 		public QueryResults<E> Query(String query, int start, int max) {
 			return wrapped.Query(query, start, max);
 		}
+    
+    @Override
+    public List<String> listEditableProperties() {
+      return this.wrapped.listEditableProperties();
+    }
+
+    @Override
+    public void setProperty(String identifier, String property, String value) {
+      this.wrapped.setProperty(identifier, property, value);
+    }
 	}
 }

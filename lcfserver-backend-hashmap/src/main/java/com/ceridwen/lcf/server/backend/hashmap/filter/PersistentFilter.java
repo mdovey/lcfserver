@@ -33,6 +33,7 @@ import com.ceridwen.lcf.server.core.QueryResults;
 import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
 import com.ceridwen.lcf.server.core.persistence.EntitySourcesInterface;
 import com.ceridwen.util.xml.XmlUtilities;
+import java.util.List;
 
 /**
  * 
@@ -111,6 +112,16 @@ public class PersistentFilter implements EntitySourcesFilter {
 		public QueryResults<E> Query(String query, int start, int max) {
 			return wrapped.Query(query, start, max);
 		}
+    
+    @Override
+    public List<String> listEditableProperties() {
+      return this.wrapped.listEditableProperties();
+    }
+
+    @Override
+    public void setProperty(String identifier, String property, String value) {
+      this.wrapped.setProperty(identifier, property, value);
+    }
 	}
 
 	EntitySourcesInterface load(EntitySourcesInterface def) {
