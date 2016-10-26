@@ -26,14 +26,17 @@ import com.ceridwen.lcf.server.core.EntityTypes.Type;
 import com.ceridwen.lcf.server.core.filter.EntitySourcesFilter;
 import com.ceridwen.lcf.server.core.persistence.EntitySourceInterface;
 import com.ceridwen.lcf.server.core.persistence.EntitySourcesInterface;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractReadOnlyFieldsFilter<E> implements EntitySourcesFilter {
+public abstract class AbstractPropertyEditorFilter<E> implements EntitySourcesFilter {
 	
 	EntitySourcesInterface entitySources;
 	
 	abstract Class<E> getHandledClass();
-	abstract E updateReadOnlyFields(EntitySourcesInterface entitySources, E entity);
+  abstract public List<String> filterListEditableProperties();
+  abstract public void filterSetProperty(String identifier, String property, String value);
 	
 	@Override
 	public EntitySourcesInterface filters(EntitySourcesInterface entitySources) {
@@ -74,12 +77,12 @@ public abstract class AbstractReadOnlyFieldsFilter<E> implements EntitySourcesFi
 
 		@Override
 		public E Retrieve(String identifier) {
-			return updateReadOnlyFields(entitySources, wrapped.Retrieve(identifier));
+			return wrapped.Retrieve(identifier);
 		}
 	
 		@Override
 		public E Modify(String identifier, E entity) {
-			return updateReadOnlyFields(entitySources, wrapped.Modify(identifier, entity));
+			return wrapped.Modify(identifier, entity);
 		}
 	
 		@Override
@@ -99,11 +102,14 @@ public abstract class AbstractReadOnlyFieldsFilter<E> implements EntitySourcesFi
 
     @Override
     public List<String> listEditableProperties() {
-      return this.wrapped.listEditableProperties();
+      ArrayList<String> props = new ArrayList<>(this.wrapped.listEditableProperties());
+      props.addAll(filterListEditableProperties());
+      return props;
     }
 
     @Override
     public void setProperty(String identifier, String property, String value) {
+      filterSetProperty(identifier, property, value);
       this.wrapped.setProperty(identifier, property, value);
     }
 	}
