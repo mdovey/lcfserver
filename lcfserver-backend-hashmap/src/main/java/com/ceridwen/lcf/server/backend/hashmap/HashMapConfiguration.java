@@ -37,6 +37,7 @@ import com.ceridwen.lcf.server.backend.hashmap.filter.ClientGeneratedIdFilter;
 import com.ceridwen.lcf.server.backend.hashmap.filter.DefaultDataLoaderFilter;
 import com.ceridwen.lcf.server.backend.hashmap.filter.ItemReadOnlyFieldsFilter;
 import com.ceridwen.lcf.server.backend.hashmap.filter.ManifestationReadOnlyFieldsFilter;
+import com.ceridwen.lcf.server.backend.hashmap.filter.PatronPasswordPropertyEditorFilter;
 import com.ceridwen.lcf.server.backend.hashmap.filter.PatronReadOnlyFieldsFilter;
 import com.ceridwen.lcf.server.backend.hashmap.filter.PersistentFilter;
 import com.ceridwen.lcf.server.backend.hashmap.filter.ReadOnlyFilter;
@@ -49,6 +50,7 @@ public class HashMapConfiguration implements Configuration {
 	public HashMapConfiguration() {
 		datasources = 	   
 						 new ReadOnlyFilter(Property.class)            		// Sets entity to be read only
+        .filters(new PatronPasswordPropertyEditorFilter()
 				.filters(new ManifestationReadOnlyFieldsFilter()	            // Automatically updates patronsinholdqueue, iteminstock counts
 				.filters(new ItemReadOnlyFieldsFilter()	               			// Automatically updates patronsinholdqueue counts
 				.filters(new PatronReadOnlyFieldsFilter()	               		// Automatically updates loan, reservation, hold counts
@@ -59,7 +61,7 @@ public class HashMapConfiguration implements Configuration {
 				.filters(new ReferentialIntegrityFilter()              			// maintain parent-child relations in database
  				.filters(new PersistentFilter(System.getProperty("java.io.tmpdir") + File.pathSeparatorChar + "database.xml")  // save to file
 				.filters(new HashMapEntitySources()	                   			// use in memory database
-				))))))))));                                               		// number of closing parenthesis need to match number of processes!		
+				)))))))))));                                               		// number of closing parenthesis need to match number of processes!		
 	}
 
 	@Override

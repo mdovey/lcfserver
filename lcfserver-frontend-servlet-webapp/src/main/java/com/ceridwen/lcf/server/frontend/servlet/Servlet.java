@@ -49,6 +49,7 @@ import com.ceridwen.lcf.server.core.responses.LCFResponse;
 import com.ceridwen.lcf.server.frontend.servlet.errors.ServletExceptionMapper;
 import com.ceridwen.util.xml.XmlUtilities;
 import java.util.Optional;
+import org.apache.commons.io.IOUtils;
 
 
 /**
@@ -201,24 +202,29 @@ public class Servlet extends HttpServlet {
 				throw new EXC05_InvalidEntityReference("Entity type not found", "Entity type not found", request.getRequestURI(), null);
 			}
 			
-			Object resp;
-			if (command.getParentType() == null && command.getId() != null) {
-				try {
-					Object entity = XmlUtilities.processXML(request.getInputStream(), command.getResource().entityType.getTypeClass());
-					resp = command.getResource().Modify(command.getId(), entity);
-				} catch (JAXBException e) {
-					throw new EXC06_InvalidDataInElement("Invalid XML", "InvalidXML", request.getRequestURI(), e);
-				}
-			} else {
-				throw new EXC04_UnableToProcessRequest("Invalid URI", "Invalid URI", request.getRequestURI(), null);
-			}
+      String body = "";
 
-			String body;
-			try {
-				body = XmlUtilities.generateXML(resp);
-			} catch (JAXBException e) {
-				throw new EXC01_ServiceUnavailable("Error generating response", "Error generating response", request.getRequestURI(), e);						
-			}
+      if (command.getProperty() == null) {
+        Object resp;
+        if (command.getParentType() == null && command.getId() != null) {
+          try {
+            Object entity = XmlUtilities.processXML(request.getInputStream(), command.getResource().entityType.getTypeClass());
+            resp = command.getResource().Modify(command.getId(), entity);
+          } catch (JAXBException e) {
+            throw new EXC06_InvalidDataInElement("Invalid XML", "InvalidXML", request.getRequestURI(), e);
+          }
+        } else {
+          throw new EXC04_UnableToProcessRequest("Invalid URI", "Invalid URI", request.getRequestURI(), null);
+        }
+
+        try {
+          body = XmlUtilities.generateXML(resp);
+        } catch (JAXBException e) {
+          throw new EXC01_ServiceUnavailable("Error generating response", "Error generating response", request.getRequestURI(), e);						
+        }
+      } else {
+        command.getResource().setProperty(command.getId(), command.getProperty(), IOUtils.toString(request.getInputStream(), request.getCharacterEncoding()));
+      }
 			
 			response.setStatus(200);
 			setDefaultHeaders(response);

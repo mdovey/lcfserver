@@ -39,6 +39,12 @@
       <artifactId>${lcfserver.backend.artifactId}</artifactId>
       <version>${lcfserver.backend.version}</version>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.5</version>
+    </dependency>
+      
   </dependencies>
   
   <profiles>

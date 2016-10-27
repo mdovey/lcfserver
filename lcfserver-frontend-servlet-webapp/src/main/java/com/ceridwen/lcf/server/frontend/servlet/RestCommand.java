@@ -44,6 +44,7 @@ class RestCommand {
 	private String id;
 	private EntityTypes.Type parentType;
 	private String parentId;
+  private String property;
 	@SuppressWarnings("rawtypes")
 	private ServletResource resource;
 	private int count;
@@ -112,16 +113,26 @@ class RestCommand {
 			this.id = id1;
 			return;
 		}
-		EntityTypes.Type type2 = EntityTypes.lookUpByEntityTypeCodeValue(st.nextToken());
-		if (type2 == null) {
-			throw new EXC04_UnableToProcessRequest("85: Invalid URL: " + request.getRequestURI(), "Invalid URL: " + request.getRequestURI(), request.getRequestURI(), null);
-		}
-		if (!st.hasMoreTokens()) {
-			this.parentType = type1;
-			this.parentId = id1;
-			this.resource = ServletResourceFactory.getServletResource(type2, baseUrl, response);;
-			return;
-		}
+    String typeOrProp = st.nextToken();
+    resource = ServletResourceFactory.getServletResource(type1, baseUrl, response);
+    if (resource.listEditableProperties().contains(typeOrProp)) {
+      if (!st.hasMoreElements()) {
+        this.id = id1;
+        this.property = typeOrProp;
+        return;
+      }
+    } else {
+      EntityTypes.Type type2 = EntityTypes.lookUpByEntityTypeCodeValue(st.nextToken());
+      if (type2 == null) {
+        throw new EXC04_UnableToProcessRequest("85: Invalid URL: " + request.getRequestURI(), "Invalid URL: " + request.getRequestURI(), request.getRequestURI(), null);
+      }
+      if (!st.hasMoreTokens()) {
+        this.parentType = type1;
+        this.parentId = id1;
+        this.resource = ServletResourceFactory.getServletResource(type2, baseUrl, response);;
+        return;
+      }
+    }
 		if (st.hasMoreTokens()) {
 			throw new EXC04_UnableToProcessRequest("Invalid URL: " + request.getRequestURI(), "Invalid URL: " + request.getRequestURI(), request.getRequestURI(), null);
 		}
@@ -137,6 +148,9 @@ class RestCommand {
 	public String getParentId() {
 		return parentId;
 	}
+  public String getProperty() {
+    return property;
+  }
 	@SuppressWarnings("rawtypes")
 	public ServletResource getResource() {
 		return resource;
