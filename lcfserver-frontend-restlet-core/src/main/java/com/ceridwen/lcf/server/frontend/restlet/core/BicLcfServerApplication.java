@@ -54,12 +54,15 @@ import com.ceridwen.lcf.server.frontend.restlet.core.resources.ManifestationEdit
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.ManifestationList;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.PatronEditor;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.PatronList;
+import com.ceridwen.lcf.server.frontend.restlet.core.resources.PatronPropertyEditor;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.PaymentEditor;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.PaymentList;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.PropertyEditor;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.PropertyList;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.ReservationEditor;
 import com.ceridwen.lcf.server.frontend.restlet.core.resources.ReservationList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BicLcfServerApplication extends Application {
 	
@@ -74,7 +77,7 @@ public class BicLcfServerApplication extends Application {
 		map.put(EntityTypes.Type.Loan, new Routes<>(LoanList.class, LoanEditor.class) );
 		map.put(EntityTypes.Type.Location, new Routes<>(LocationList.class, LocationEditor.class) );
 		map.put(EntityTypes.Type.Manifestation, new Routes<>(ManifestationList.class, ManifestationEditor.class) );
-		map.put(EntityTypes.Type.Patron, new Routes<>(PatronList.class, PatronEditor.class) );
+		map.put(EntityTypes.Type.Patron, new Routes<>(PatronList.class, PatronEditor.class, PatronPropertyEditor.class) );
 		map.put(EntityTypes.Type.Payment, new Routes<>(PaymentList.class, PaymentEditor.class) );
 		map.put(EntityTypes.Type.Property, new Routes<>(PropertyList.class, PropertyEditor.class) );
 		map.put(EntityTypes.Type.Reservation, new Routes<>(ReservationList.class, ReservationEditor.class) );
@@ -109,6 +112,20 @@ public class BicLcfServerApplication extends Application {
         	// attach router for retrieval\modify\delete
         	router.attach(EntityTypes.LCF_PREFIX + "/" + type.getEntityTypeCodeValue() + "/{identifier}", routeMap.get(type).getEditor());
         	router.attach(EntityTypes.LCF_PREFIX + "/" + type.getEntityTypeCodeValue() + "/{identifier}/", routeMap.get(type).getEditor());
+          
+          // attach property editor router
+          if (routeMap.get(type).getPropEditor() != null) {
+            try {
+              for (String prop: routeMap.get(type).getPropEditor().newInstance().listEditableProperties()) {
+                router.attach(EntityTypes.LCF_PREFIX + "/" + type.getEntityTypeCodeValue() + "/{identifier}/" + prop, routeMap.get(type).getPropEditor());
+                router.attach(EntityTypes.LCF_PREFIX + "/" + type.getEntityTypeCodeValue() + "/{identifier}/" + prop + "/", routeMap.get(type).getPropEditor());
+              }
+            } catch (InstantiationException ex) {
+              Logger.getLogger(BicLcfServerApplication.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+              Logger.getLogger(BicLcfServerApplication.class.getName()).log(Level.SEVERE, null, ex);
+            }
+          }
         	
         	// attach parent list\create routers
         	for (Relationship<?,?> rel: RelationshipFactory.getRelationshipsAsChild(type)) {

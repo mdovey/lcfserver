@@ -99,6 +99,10 @@ public class ResourceHandler<E> extends AbstractResourceHandler<E> {
 	public void Delete() {
 		this.Delete(resource.getAttribute("identifier"));
 	}
+  
+  public void setProperty(String value) {
+    this.setProperty(resource.getAttribute("identifier"), resource.getAttribute("property"), value);
+  }
 		
 	public LcfEntityListResponse List() {
 		int startIndex = 0;

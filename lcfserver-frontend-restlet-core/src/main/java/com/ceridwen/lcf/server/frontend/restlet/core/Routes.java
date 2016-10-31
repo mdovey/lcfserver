@@ -21,15 +21,24 @@
  *******************************************************************************/
 package com.ceridwen.lcf.server.frontend.restlet.core;
 
+import com.ceridwen.lcf.server.frontend.restlet.core.resources.AbstractPropertyEditorResource;
 import org.restlet.resource.ServerResource;
 
 class Routes<E> {
 	private Class<? extends ServerResource> list;
 	private Class<? extends ServerResource> editor;
+  private Class<? extends AbstractPropertyEditorResource> propEditor;
 	
 	Routes(Class<? extends ServerResource> list, Class<? extends ServerResource> editor) {
 		this.list = list;
 		this.editor = editor;
+    this.propEditor = null;
+	}
+
+  Routes(Class<? extends ServerResource> list, Class<? extends ServerResource> editor, Class<? extends AbstractPropertyEditorResource> propEditor) {
+		this.list = list;
+		this.editor = editor;
+    this.propEditor = propEditor;
 	}
 
 	public Class<? extends ServerResource> getList() {
@@ -46,5 +55,13 @@ class Routes<E> {
 
 	public void setEditor(Class<? extends ServerResource> editor) {
 		this.editor = editor;
+	}	
+
+	public Class<? extends AbstractPropertyEditorResource> getPropEditor() {
+		return propEditor;
+	}
+
+	public void setPropEditor(Class<? extends AbstractPropertyEditorResource> propEditor) {
+		this.propEditor = propEditor;
 	}	
 }
