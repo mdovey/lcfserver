@@ -34,9 +34,8 @@ public class PatronPropertyEditor extends AbstractPropertyEditorResource {
 
 
 	@Put("txt:txt")
-	public String Modify(String data) {
+	public void Modify(String data) {
 		handler.setProperty(data);
-    return "";
 	}
   
   @Override
