@@ -33,7 +33,7 @@ public class PatronPropertyEditor extends AbstractPropertyEditorResource {
 	}
 
 
-	@Put(ResourceHandler.CONSUME_PRODUCES_TYPES)
+	@Put("txt:txt")
 	public void Modify(String data) {
 		handler.setProperty(data);
 	}
